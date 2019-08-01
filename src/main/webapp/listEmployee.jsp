@@ -10,9 +10,19 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Employee Servlet: List</title>
+
+<script type="text/javascript">
+	function addEmployee(){
+		var url = window.location.href;
+		url = url.replace(/\?[^\?]*$/,"");
+		url += "?action=add";
+		window.location.href = url; 
+	}
+</script>
 </head>
 <body>
+<input class="btn btn-danger" style="    position: absolute; top: 0px; right: 0px;" type="button" value="Add Employee (randomly)" onclick="addEmployee()">
 <%
 	String message = (String) request.getAttribute("message");
 	if(!StringUtil.isNull(message)){
@@ -26,7 +36,7 @@
 			if("id".equals(request.getAttribute("sort"))){
 		%>
 		<th class="sortable sorted ${ order }" >
-			<a href="${ url }action=list&sort=id&order=${ order=='asc'?'desc':'asc' }">No.</a>
+			<a href="${ url }action=list&sort=id&order=${ order=='asc'?'desc':'asc' }">Number</a>
 		</th>
 		<% } else { %>
 		<th class="sortable " >

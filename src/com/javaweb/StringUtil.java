@@ -27,7 +27,7 @@ public class StringUtil {
 		
 		employee.setBirthday(Date.valueOf(year+"-"+month+"-"+day));
 		employee.setDateCreated(new java.util.Date());
-		employee.setDescription("");
+		employee.setDescription(faker.color().name());
 		employee.setDisabled(random.nextInt(10)==9);
 		
 		employee.setSex(random.nextInt(3)==2?"M":"F");
@@ -47,7 +47,7 @@ public class StringUtil {
 	}
 
 	public static boolean isNull(String str) {
-		return "".equals(str);
+		return str==null || "".equals(str);
 	}
 
 	public static Object getURL(HttpServletRequest request) {

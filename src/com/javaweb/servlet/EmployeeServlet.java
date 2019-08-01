@@ -64,7 +64,7 @@ public class EmployeeServlet extends HttpServlet {
 			sort="id";
 		}
 		if (StringUtil.isNull(order)) {
-			sort="desc";
+			order="desc";
 		}
 		
 		String name = request.getParameter("name");
@@ -137,8 +137,13 @@ public class EmployeeServlet extends HttpServlet {
 		
 		// some error 
 		// Query query = ... ?
-		TypedQuery query = HibernateUtil.getSessionFactory().openSession().createQuery(" select count(e) "+hql);
-		
+//		TypedQuery query = HibernateUtil.getSessionFactory().openSession().createQuery(" select count(e) "+hql);
+
+		TypedQuery<Employee> query;
+		query = HibernateUtil.getSessionFactory().openSession()
+				.createQuery(hql).setFirstResult(0)
+				.setMaxResults(10);
+
 		if(hql.contains("name"))
 			query.setParameter("name", "%"+name+"%");
 		if(hql.contains("sex"))
@@ -157,12 +162,10 @@ public class EmployeeServlet extends HttpServlet {
 			query.setParameter("disabled", "true".equals(disabled));
 
 		
-		Number result = (Number) query.getSingleResult();
-		int count = result.intValue();
+//		Number result = (Number) query.getSingleResult();
+//		int count = result.intValue();
 		
-		query = HibernateUtil.getSessionFactory().openSession()
-				.createQuery(hql).setFirstResult(0)
-				.setMaxResults(10);
+		
 		
 		List<Employee> employeeList = query.getResultList();
 		request.setAttribute("url", StringUtil.getURL(request));
