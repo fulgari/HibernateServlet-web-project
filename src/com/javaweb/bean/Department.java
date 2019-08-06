@@ -18,7 +18,7 @@ public class Department {
 	
 	@OneToOne
 	@JoinColumn(name = "line_manager_id")
-	private Employee linEmployee;
+	private Employee lineManager;
 	
 	@OneToMany(mappedBy = "department")
 	private Set<Employee> employees = new HashSet<Employee>();
@@ -47,12 +47,12 @@ public class Department {
 		this.description = description;
 	}
 
-	public Employee getLinEmployee() {
-		return linEmployee;
+	public Employee getLineManager() {
+		return lineManager;
 	}
 
-	public void setLinEmployee(Employee linEmployee) {
-		this.linEmployee = linEmployee;
+	public void setLineManager(Employee lineManager) {
+		this.lineManager = lineManager;
 	}
 
 	public Set<Employee> getEmployees() {

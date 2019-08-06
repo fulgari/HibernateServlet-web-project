@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.sql.Template.NoOpColumnMapper;
 
 import antlr.StringUtils;
@@ -79,31 +80,30 @@ public class EmployeeServlet extends HttpServlet {
 		String disabled = request.getParameter("disabled");
 		
 		String where="";
-		
 		if (!StringUtil.isNull(name)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-//			where += " e.name like '%"+name+"%' ";
-			where += " e.name like :name ";
+			where += " e.name like '%"+name+"%' ";
+//			where += " e.name like :name ";
 		}
 		if (!StringUtil.isNull(sex)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-//			where += " e.sex = '"+sex+"' ";
-			where += " e.sex = :sex ";
+			where += " e.sex = '"+sex+"' ";
+//			where += " e.sex = :sex ";
 		}
 		
 		if (!StringUtil.isNull(age)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-//			where += " e.age "+ageOperate+" "+age;
-			where += " e.age "+ageOperate+" :age ";
+			where += " e.age "+ageOperate+" "+age;
+//			where += " e.age "+ageOperate+" :age ";
 		}
 		if (!StringUtil.isNull(birthday)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-//			where += " e.birthday = '"+birthday+"' ";
-			where += " e.birthday = :birthday ";
+			where += " e.birthday = '"+birthday+"' ";
+//			where += " e.birthday = :birthday ";
 		}
 		if (!StringUtil.isNull(time)) {
 			if (!StringUtil.isNull(where)) 
@@ -113,14 +113,14 @@ public class EmployeeServlet extends HttpServlet {
 		if (!StringUtil.isNull(salary)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-//			where += " e.salary "+salaryOperate+" "+salary;
-			where += " e.salary "+salaryOperate+" :salary ";
+			where += " e.salary "+salaryOperate+" "+salary;
+//			where += " e.salary "+salaryOperate+" :salary ";
 		}
 		if (!StringUtil.isNull(description)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-//			where += " e.name like '%"+description+"%' ";
-			where += " e.name like :description ";
+			where += " e.name like '%"+description+"%' ";
+//			where += " e.name like :description ";
 		}
 		if (!StringUtil.isNull(disabled)) {
 			if (!StringUtil.isNull(where)) 
@@ -132,8 +132,10 @@ public class EmployeeServlet extends HttpServlet {
 		if (!StringUtil.isNull(where)) {
 			hql+=" where "+where;
 		}
+
 		
 		hql += " order by e."+sort+" "+order;
+		System.out.println("---------------------------===================================="+hql);
 		
 		// some error 
 		// Query query = ... ?
@@ -141,11 +143,12 @@ public class EmployeeServlet extends HttpServlet {
 
 		TypedQuery<Employee> query;
 		query = HibernateUtil.getSessionFactory().openSession()
-				.createQuery(hql).setFirstResult(0)
-				.setMaxResults(10);
+				.createQuery(hql);
 
+
+		/*
 		if(hql.contains("name"))
-			query.setParameter("name", "%"+name+"%");
+			query.setParameter("name", MatchMode.ANYWHERE.toMatchString(name));
 		if(hql.contains("sex"))
 			query.setParameter("sex", sex);
 		if(hql.contains("age"))
@@ -160,6 +163,7 @@ public class EmployeeServlet extends HttpServlet {
 			query.setParameter("description", "%"+description+"%");
 		if(hql.contains("disabled"))
 			query.setParameter("disabled", "true".equals(disabled));
+			*/
 
 		
 //		Number result = (Number) query.getSingleResult();
