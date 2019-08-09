@@ -66,26 +66,40 @@ function whetherEnter(){
 function query(){
 	var key=$('#key')[0].value;
 	var lineManagerList=$('select[name=lineManagerList]')[0];
-	alert(key);
-	$.post("DepartmentServlet",{action:"query",key:key},
-			function (data, textStatus){
-		if(textStatus!='success'){
+/* 	$.post("DepartmentServlet",{action:"query",key:key}, 
+		function (data, textStatus){
+			if(textStatus!='success'){
 			alert('Error occurred:'+textStatus+', data:'+data);
 			return;
-		}
-		lineManagerList.options.length=0;
-		for(var i in data){
-			lineManagerList.options.add(new Option(data[i],i));
-		}
-	},"json");
+			}
+			alert(data);
+			lineManagerList.options.length=0;
+			for(var i in data){
+				lineManagerList.options.add(new Option(data[i],i));
+			}
+	},"json"); */
+	$.ajax({
+		type:'post',
+		url:'DepartmentServlet',
+		data:{action:"query",key:key},
+		async:false,
+		dataType:'json',
+		success:function(data){
+			alert(data);
+		},
+		error:function(response){ alert("error"); }
+		});
 }
-
-$('input[name=btnQuery]').click(function(){query();});
-$('input[name=key]').keypress(function(){return whetherEnter();});
-$('input[name=btnToRight]').click(function(){toRight();});
-$('input[name=btnToLeft]').click(function(){toLeft();});
-$('select[name=lineManagerList]').dbclick(function(){toRight()});
-$('select[name=lineManagerId]').dbclick(function(){toLeft()});
+// .click() is deprecated in JQuery3
+// Solution: Instead of .click(fn) use .on("click", fn). Instead of .click() use .trigger("click").
+$(document).ready(function(){
+	$("button[name='btnQuery']").on("click",function(){query();});
+	$("input[name=key]").keypress(function(){return whetherEnter();});
+	$('button[name=btnToRight]').click(function(){toRight();});
+	$('button[name=btnToLeft]').click(function(){toLeft();});
+	$('select[name=lineManagerList]').dbclick(function(){toRight()});
+	$('select[name=lineManagerId]').dbclick(function(){toLeft()});
+});
 
 
 
@@ -93,10 +107,10 @@ $('select[name=lineManagerId]').dbclick(function(){toLeft()});
 </script>
 </head>
 <body>
-	<input type="hidden" name="action" value="add">
-	<input type="hidden" name="id" value="${ id }">
 	<div class="container">
 		<form class=p-2 action="DepartmentServlet" method="post">
+			<input type="hidden" name="action" value="add">
+			<input type="hidden" name="id" value="${ id }">
 
 			<div>
 				<h2>Add department</h2>
@@ -112,13 +126,14 @@ $('select[name=lineManagerId]').dbclick(function(){toLeft()});
 				<div class="col-sm-4 input-group" style="margin:0px;padding:0px;">
 					<input class="form-control" id="key" name="key" type="text" placeholder="input name to query">
 					<span class="input-group-btn" style="margin-left:20px;">
-					<button class="btn btn-outline-primary" name=btnQuery type="button">Search</button>
+					<button class="btn btn-outline-primary" name="btnQuery" id="btnQuery" type="button">Search</button>
 					</span>
 				</div>
 			</div>
 			<div class="form-group row offset-sm-2" style="padding-left:0px;">
 				<div class="col-sm-2" style="margin-left:0px;padding-left:0px;">
 					<select multiple class=form-control name="lineManagerList">
+						<option value=""></option>
 					</select>
 				</div>
 				<div class="text-center col-sm-1">

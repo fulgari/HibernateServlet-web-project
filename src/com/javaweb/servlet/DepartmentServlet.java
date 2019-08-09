@@ -65,6 +65,8 @@ public class DepartmentServlet extends HttpServlet {
 		String description=request.getParameter("description");
 		String lineManagerId=request.getParameter("lineManagerId");
 		
+		System.out.println("--------------====id="+id+", name="+name);
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/addDepartment.jsp");
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction trans = session.beginTransaction();
@@ -116,9 +118,10 @@ public class DepartmentServlet extends HttpServlet {
 		if(employeeList.size()>SIZE) {
 			buffer.append(", 0:\"More than "+SIZE+" messages...\"");
 		}
+
 		buffer.append("}");
+		System.out.println("--------------====StringBuffer="+buffer.toString());
 		response.getWriter().write(buffer.toString());
-		
 	}
 
 	private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
