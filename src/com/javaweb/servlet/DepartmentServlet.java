@@ -1,6 +1,8 @@
 package javaweb.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JOptionPane;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -53,9 +56,43 @@ public class DepartmentServlet extends HttpServlet {
 			add(request,response);
 		} else if ("query".equals(action)) {
 			query(request, response);
+		} else if("edit".equals(action)){
+			edit(request, response);
+		} else if ("delete".equals(action)) {
+			delete(request, response);
 		} else {
 			list(request, response);
 		}
+		
+	}
+
+	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out=response.getWriter();
+		try {
+		String id = request.getParameter("id").toString();
+		
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction trans = session.beginTransaction();
+		Department d = (Department)session.get(Department.class, new Integer(id));
+		String name = d.getId()+". "+d.getName()+" - "+d.getLineManager();
+		
+		session.delete(d);
+		trans.commit();
+		session.close();
+		request.setAttribute("message", "Department \""+name+"\" deleted.");
+		list(request, response);
+		} catch (javax.persistence.PersistenceException e) {
+	        out.println("<script type=\"text/javascript\">");
+	//        out.println("alert('Please+edit+and+remove+all+the+employees+of+this+Department.');");
+	        out.println("alert('Hello');");
+	        out.println("</script>");
+			response.sendRedirect("DepartmentServlet?action=list");
+		}
+	}
+
+	private void edit(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -112,7 +149,7 @@ public class DepartmentServlet extends HttpServlet {
 				buffer.append(",");
 			}
 			Employee employee = employeeList.get(i);
-			buffer.append(employee.getId()+":\""+employee.getName()+"\"");
+			buffer.append("\""+employee.getId()+"\":\""+employee.getName()+"\"");
 		}
 		
 		if(employeeList.size()>SIZE) {
@@ -165,7 +202,7 @@ public class DepartmentServlet extends HttpServlet {
 			hql+=" where "+where;
 		}
 		
-		hql += " order by d."+sort+" "+order;
+		hql += " order by d."+(sort.equals("employeesSize")?"employees.size":sort)+" "+order;
 			
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		List<Department> departmentList = session.createQuery(hql).list();

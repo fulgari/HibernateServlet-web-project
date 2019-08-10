@@ -1,6 +1,8 @@
 package javaweb.servlet;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,7 @@ import antlr.StringUtils;
 import javassist.expr.NewArray;
 import javaweb.HibernateUtil;
 import javaweb.StringUtil;
+import javaweb.bean.Department;
 import javaweb.bean.Employee;
  
 /**
@@ -52,9 +55,81 @@ public class EmployeeServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		if ("add".equals(action)) {
 			addEmployee(request,response);
-			return;
-		}
+		} else if("edit".equals(action)) {
+			edit(request,response);
+		} else if("save".equals(action)) {
+			save(request,response);
+		} else if("delete".equals(action)) {
+			delete(request,response);
+		} else
+			listEmployee(request, response);
+	}
+
+	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id").toString();
+		
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction trans = session.beginTransaction();
+		Employee e = (Employee)session.get(Employee.class, new Integer(id));
+		String name = e.getId()+". "+e.getName()+" - "+e.getSex()+" - "+e.getAge()+" - "+e.getDescription();
+		
+		session.delete(e);
+		trans.commit();
+		session.close();
+		request.setAttribute("message", "Employee \""+name+"\" deleted.");
 		listEmployee(request, response);
+	}
+
+	private void save(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+		String id = request.getParameter("id");
+		String departmentId = request.getParameter("departmentId");
+		String name = request.getParameter("name");
+		String sex = request.getParameter("sex");
+		String age = request.getParameter("age");
+		String salary = request.getParameter("salary");
+		String birthday = request.getParameter("birthday");
+		String description = request.getParameter("description");
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		String disabled = request.getParameter("disabled");
+		
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction trans = session.beginTransaction();
+		Employee e = (Employee)session.get(Employee.class, new Integer(id));
+
+		e.setName(name);
+		e.setDescription(description);
+		e.setAge(new Integer(age));
+		e.setEndTime(Time.valueOf(endTime));
+		e.setStartTime(Time.valueOf(startTime));
+		e.setSalary(new Double(salary));
+		e.setSex(sex);
+		e.setBirthday(java.sql.Date.valueOf(birthday));
+		e.setDisabled("true".equalsIgnoreCase(disabled));
+
+		if(StringUtil.isNull(departmentId)) {
+			e.setDepartment(null);
+		} else {
+			e.setDepartment((Department) session.get(Department.class, new Integer(departmentId)));
+		}
+		
+		session.save(e);
+		trans.commit();
+		session.close();
+		response.sendRedirect("EmployeeServlet?action=list&message="+URLEncoder.encode("Employee\""+e.getName()+"\" is saved.", "UTF-8"));
+	}
+
+	private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Employee e = (Employee)session.get(Employee.class, new Integer(id));
+		List departmentList = session.createQuery(" from Department d ").list();
+		session.close();
+		request.setAttribute("action", "save");
+		request.setAttribute("departmentList", departmentList);
+		request.setAttribute("employee", e);
+		request.getRequestDispatcher("/addEmployee.jsp").forward(request, response);
+		
 	}
 
 	private void listEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -108,7 +183,7 @@ public class EmployeeServlet extends HttpServlet {
 		if (!StringUtil.isNull(time)) {
 			if (!StringUtil.isNull(where)) 
 				where += " and ";
-			where += " (e.startTime <= :time and e.endTime >= :time)";
+			where += "( e.startTime < '"+time+"' and e.endTime > '"+time+"')";
 		}
 		if (!StringUtil.isNull(salary)) {
 			if (!StringUtil.isNull(where)) 

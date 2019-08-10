@@ -1,5 +1,6 @@
 <%@page import="javaweb.bean.Employee"%>
 <%@page import="javaweb.bean.Department"%>
+<%@page import="javaweb.StringUtil"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -13,9 +14,58 @@
 <script src="webjars/bootstrap/4.3.1/css/bootstrap.min.js"></script>
 <meta charset="ISO-8859-1">
 <title>Department Servlet: List</title>
+
+<script type="text/javascript">
+	function addEmployee() {
+		var url = window.location.href;
+		url = url.replace(/\?[^\?]*$/, "");
+		url += "?action=add";
+		window.location.href = url;
+	}
+
+	$(document).ready(function(){
+		$('#msg').click(function(){
+			$('#msg').fadeOut("slow");
+		});
+		setTimeout(function(){
+			$('#msg').fadeOut("slow");
+		},3000);
+
+	})
+</script>
+
 </head>
 <body>
 	<div class="container">
+		<%
+			String message = (String) request.getAttribute("message");
+			if (!StringUtil.isNull(message)) {
+		%>
+
+			<div id='msg' class='alert text-center alert-success'>
+				<%= message %>
+			</div>
+		
+		<% } %>
+
+		<div class="row float-right mr-auto p-2">
+			<div class=clearfix>
+				<input class="btn btn-primary float-right" type="button"
+					value="Employee List" onclick="window.location.href='EmployeeServlet'">
+			</div>
+		</div>
+		<div class="row float-right mr-auto p-2">
+			<div class=clearfix>
+				<input class="btn btn-primary float-right" type="button"
+					value="Department List" onclick="window.location.href='DepartmentServlet'">
+			</div>
+		</div>
+		<div class="row float-right mr-auto p-2">
+			<div class=clearfix>
+				<input class="btn btn-primary float-right" type="button"
+					value="addDepartment" onclick="window.location.href='addDepartment.jsp'">
+			</div>
+		</div>
 		<form class=p-2 action="/HibernetServlet/DepartmentServlet">
 			<div>
 				<h2>Query department</h2>
@@ -116,6 +166,23 @@
 				<%
 					}
 				%>
+				<!-- employeesSize -->
+				<%
+					if ("employeesSize".equals(request.getAttribute("sort"))) {
+				%>
+				<th class="sortable"><a
+					href="${ url }action=list&sort=employeesSize&order=${ order=='asc'?'desc':'asc' }">EmloyeesSize</a>
+				</th>
+				<%
+					} else {
+				%>
+				<th class="sortable"><a
+					href="${ url }action=list&sort=employeesSize&order=asc">EmployeesSize</a></th>
+				<%
+					}
+				%>
+				<th>Operation</th>
+				
 			</tr>
 
 
@@ -143,7 +210,7 @@
 					out.println("</td>");
 					out.println("  <td><a href=DepartmentServlet?action=edit&id=" + d.getId() + ">Modify</a>");
 					out.println(
-							"  <a onclick=\"return confirm('sure to delete department?')\" href=DepartmentServlet?action=delete&id="
+							"  <a onclick=\"return confirm('sure to delete department &QUOT;"+d.getName()+"&QUOT;?')\" href=DepartmentServlet?action=delete&id="
 									+ d.getId() + ">delete</a></td>");
 					out.println("</tr>");
 				}

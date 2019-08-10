@@ -48,7 +48,19 @@
 			</div>
 		
 		<% } %>
-		
+
+		<div class="row float-right mr-auto p-2">
+			<div class=clearfix>
+				<input class="btn btn-primary float-right" type="button"
+					value="Employee List" onclick="window.location.href='#'">
+			</div>
+		</div>
+		<div class="row float-right mr-auto p-2">
+			<div class=clearfix>
+				<input class="btn btn-primary float-right" type="button"
+					value="Department List" onclick="window.location.href='DepartmentServlet'">
+			</div>
+		</div>
 
 		<div class="row float-right mr-auto p-2">
 			<div class=clearfix>
@@ -113,9 +125,10 @@
 					<label class=mx-1 for=birthday_in>birthday</label> <input
 						class=form-control name=birthday id=birthday_in type="date">
 				</div>
+				<!-- Time is Not Finished -->
 				<div class=col-md-4>
-					<label class=mx-1 for=startTime_in>start time</label> <input
-						class=form-control name=startTime id=startTime_in type="time">
+					<label class=mx-1 for=time_in>time</label> <input
+						class=form-control name=time id=time_in type="time">
 				</div>
 				<div class=col-md-4>
 					<label class=mx-1 for=salary_in>salary</label>
@@ -291,7 +304,16 @@
 						out.println("  <td>$" + salary.format(e.getSalary()) + "</td>");
 						out.println("  <td>" + e.getStartTime() + "</td>");
 						out.println("  <td>" + e.getEndTime() + "</td>");
-						out.println("  <td>" + (e.isDisabled() ? "Stopped" : "Normal") + "</td>");
+
+						// out.println("  <td>" + (e.isDisabled() ? "Stopped" : "Normal") + "</td>");
+
+						if(e.isDisabled()){
+							out.println("  <td>" + "Stopped" + "</td>");
+						} else {
+							out.println("  <td><a href=EmployeeServlet?action=edit&id=" + e.getId() + ">Modify</a>");
+							out.println("  <a onclick=\"return confirm('sure to delete employee "+e.getName()+"?')\" href=EmployeeServlet?action=delete&id="+ e.getId() + ">delete</a></td>");
+						}
+
 						out.println("</tr>");
 					}
 				%>
