@@ -115,7 +115,7 @@
 		$('button[name=btnToLeft]').click(function() {
 			toLeft();
 		});
-
+		
 		// not working
 		$('select[name=lineManagerList]').on("dbclick",function() {
 			toRight()
@@ -128,25 +128,32 @@
 </head>
 <body>
 	<div class="container">
-		<form class=p-2 action="DepartmentServlet" method="post">
-			<input type="hidden" name="action" value="add"> <input
-				type="hidden" name="id" value="${ id }">
-
-			<div>
+		<div class="p-2 row">
+			<div class="col-sm-2">
+				<button class="btn btn-light" onclick="history.back()">back</button>
+			</div>
+			<div class="col-auto">
 				<h2>Add department</h2>
 			</div>
+		</div>
+		<form class=p-2 action="DepartmentServlet" method="post">
+			<input type="hidden" name="action" value="add"> 
+			<input type="hidden" name="id" value="${ id }">
+
+			
+
 
 			<div class="form-group p-2 row">
 				<label class="col-sm-2 col-form-label" for=name_id>Name</label> <input
 					class="col-sm-4 form-control" id=name_id name=name type="text"
-					value="${ name }">
+					value="${ department.name }">
 			</div>
 			<div class="form-group p-2 row">
 				<label class="col-sm-2 col-form-label" for=key>Manager</label>
 				<div class="col-sm-4 input-group" style="margin: 0px; padding: 0px;">
 					<input class="form-control" id="key" name="key" type="text"
-						placeholder="input name to query"> <span
-						class="input-group-btn" style="margin-left: 20px;">
+						placeholder="input name to query" value="${ department.lineManager.name }"> 
+					<span class="input-group-btn" style="margin-left: 20px;">
 						<button class="btn btn-outline-primary" name="btnQuery"
 							id="btnQuery" type="button">Search</button>
 					</span>
@@ -170,10 +177,15 @@
 				</div>
 			</div>
 
+			<div class="form-group p-2 row">
+				<label class="col-sm-2 col-form-label" for=employees_id>Employees</label> 
+				<button class="btn btn-outline-primary col-auto" type="button" id=employees_id onclick="window.location.href='EmployeeServlet';">Employee List</button>
+			</div>
+
 			<div class="form-group p-2 row mt-4">
 				<label class="col-sm-2 col-form-label" for=description_id>Description</label>
 				<textarea class="col-sm-4 form-control" name=description
-					id=description_id rows=4>${ description }</textarea>
+					id=description_id rows=4>${ department.description }</textarea>
 			</div>
 			<div class="form-group p-2 row offset-sm-3">
 				<button type="submit" class="btn btn-primary">Submit</button>

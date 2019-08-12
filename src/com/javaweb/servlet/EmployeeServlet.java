@@ -61,8 +61,9 @@ public class EmployeeServlet extends HttpServlet {
 			save(request,response);
 		} else if("delete".equals(action)) {
 			delete(request,response);
-		} else
+		} else {
 			listEmployee(request, response);
+		}
 	}
 
 	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -116,7 +117,7 @@ public class EmployeeServlet extends HttpServlet {
 		session.save(e);
 		trans.commit();
 		session.close();
-		response.sendRedirect("EmployeeServlet?action=list&message="+URLEncoder.encode("Employee\""+e.getName()+"\" is saved.", "UTF-8"));
+		response.sendRedirect("EmployeeServlet?action=list&alert="+URLEncoder.encode("Employee \""+name+"\" is saved.", "UTF-8"));
 	}
 
 	private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

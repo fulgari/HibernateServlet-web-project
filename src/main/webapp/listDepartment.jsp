@@ -37,6 +37,18 @@
 </head>
 <body>
 	<div class="container">
+		<!-- alert for un-deleteable department having foreign key-->
+		<% 
+			String alert = (String) request.getAttribute("alert");
+			if(!StringUtil.isNull(alert)) {
+		%>
+			<script type="text/javascript">
+				alert('<%= alert %>');
+				window.location.href="DepartmentServlet";
+			</script>
+		<% } %>
+
+		<!-- msg alert-top -->
 		<%
 			String message = (String) request.getAttribute("message");
 			if (!StringUtil.isNull(message)) {
@@ -66,20 +78,21 @@
 					value="addDepartment" onclick="window.location.href='addDepartment.jsp'">
 			</div>
 		</div>
+		<!-- form for the query -->
 		<form class=p-2 action="/HibernetServlet/DepartmentServlet">
 			<div>
 				<h2>Query department</h2>
 			</div>
 			<div class="p-2 row">
 				<div class=col-md-4>
-					<label class=mx-1 for="name_in">name</label> <input
-						class="form-control" id="name_in" name="name" type="text">
+					<label class=mx-1 for="name_in">name</label> 
+					<input class="form-control" id="name_in" name="departmentName" type="text">
 					<small id="nameHelp" class="form-text text-muted">You can
 						input part of the name of the department.</small>
 				</div>
 				<div class=col-md-4>
-					<label class=mx-1 for=managerName_in>manager name</label> <input
-						class=form-control name=managerName id=managerName_in type="text">
+					<label class=mx-1 for=managerName_in>manager name</label> 
+					<input class=form-control name=managerName id=managerName_in type="text">
 				</div>
 				<div class=col-md-4>
 					<div class="form-group">
@@ -198,7 +211,6 @@
 					out.println("  <td>" + d.getName() + "</td>");
 					out.println("  <td>" + (lineManager == null ? "" : lineManager.getName()) + "</td>");
 					out.println("  <td>" + d.getEmployees().size());
-					boolean endFlag = false;
 					if (d.getEmployees().size() > 0) {
 						out.println("( ");
 						for (Employee ee : d.getEmployees()) {
@@ -208,14 +220,14 @@
 					}
 
 					out.println("</td>");
-					out.println("  <td><a href=DepartmentServlet?action=edit&id=" + d.getId() + ">Modify</a>");
-					out.println(
-							"  <a onclick=\"return confirm('sure to delete department &QUOT;"+d.getName()+"&QUOT;?')\" href=DepartmentServlet?action=delete&id="
+					out.println("  <td><a class='btn btn-outline-info btn-sm' href=DepartmentServlet?action=edit&id=" + d.getId() + ">Modify</a>");
+					out.println("  <a class='btn btn-outline-danger btn-sm' onclick=\"return confirm('sure to delete department &QUOT;"+d.getName()+"&QUOT;?')\" href=DepartmentServlet?action=delete&id="
 									+ d.getId() + ">delete</a></td>");
 					out.println("</tr>");
 				}
 			%>
 		</table>
 	</div>
+
 </body>
 </html>

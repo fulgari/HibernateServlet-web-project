@@ -38,6 +38,17 @@
 </head>
 <body>
 	<div class=container>
+		<!--  alert for 'employee saved'-->
+		<% 
+			String alert = (String) request.getAttribute("alert");
+			if(!StringUtil.isNull(alert)) {
+		%>
+		<script type="text/javascript">
+			alert("<%= alert %>");
+			window.location.href="EmployeeServlet";
+		</script>
+		<% } %>
+
 		<%
 			String message = (String) request.getAttribute("message");
 			if (!StringUtil.isNull(message)) {
@@ -52,7 +63,7 @@
 		<div class="row float-right mr-auto p-2">
 			<div class=clearfix>
 				<input class="btn btn-primary float-right" type="button"
-					value="Employee List" onclick="window.location.href='#'">
+					value="Employee List" onclick="window.location.href='EmployeeServlet'">
 			</div>
 		</div>
 		<div class="row float-right mr-auto p-2">
@@ -64,7 +75,7 @@
 
 		<div class="row float-right mr-auto p-2">
 			<div class=clearfix>
-				<input class="btn btn-danger float-right" type="button"
+				<input class="btn btn-warning float-right" type="button"
 					value="Add Employee (randomly)" onclick="addEmployee()">
 			</div>
 		</div>
@@ -152,7 +163,7 @@
 			</div>
 		</form>
 		<div class="p-2 mx-auto">
-			<table class="table table-striped ">
+			<table class="table table-striped table-hover">
 				<tr>
 					<!-- id -->
 					<%
@@ -275,7 +286,7 @@
 						}
 					%>
 					<!-- operation -->
-					<%
+			   <%-- <%
 						if ("disabled".equals(request.getAttribute("sort"))) {
 					%>
 					<th class="sortable"><a
@@ -288,7 +299,8 @@
 						href="${ url }action=list&sort=disabled&order=asc">Operation</a></th>
 					<%
 						}
-					%>
+					%> --%>
+					<th>Operation</th>
 				</tr>
 				<%
 					List<Employee> employeeList = (List<Employee>) request.getAttribute("employeeList");
@@ -307,12 +319,8 @@
 
 						// out.println("  <td>" + (e.isDisabled() ? "Stopped" : "Normal") + "</td>");
 
-						if(e.isDisabled()){
-							out.println("  <td>" + "Stopped" + "</td>");
-						} else {
-							out.println("  <td><a href=EmployeeServlet?action=edit&id=" + e.getId() + ">Modify</a>");
-							out.println("  <a onclick=\"return confirm('sure to delete employee "+e.getName()+"?')\" href=EmployeeServlet?action=delete&id="+ e.getId() + ">delete</a></td>");
-						}
+						out.println("  <td><a class='btn btn-outline-info btn-sm' href=EmployeeServlet?action=edit&id=" + e.getId() + ">Modify</a>");
+						out.println("  <a class='btn btn-outline-danger btn-sm' onclick=\"return confirm('sure to delete employee "+e.getName()+"?')\" href=EmployeeServlet?action=delete&id="+ e.getId() + ">delete</a></td>");
 
 						out.println("</tr>");
 					}

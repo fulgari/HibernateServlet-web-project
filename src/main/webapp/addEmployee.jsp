@@ -15,12 +15,17 @@
 </head>
 <body>
 <div class="container">
+<div class="p-2 row">
+	<div class="col-sm-2">
+		<button class="btn btn-light" onclick="history.back()">back</button>
+		</div>
+		<div class="col-auto">
+			<h2>Employee Info</h2>
+		</div>
+	</div>
 <form class="p-2" action="EmployeeServlet" method="post">
 	<input type="hidden" name="action" value="${ action }">
 	<input type="hidden" name="id" value="${ employee.id }">
-	<div>
-		<h2>Employee Info</h2>
-	</div>
 	<!-- department -->	
 	<div class="form-group p-2 row">
 		<label class="col-sm-2 col-form-label" for=department_id>Department</label> 

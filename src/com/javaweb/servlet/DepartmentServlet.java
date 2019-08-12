@@ -67,32 +67,35 @@ public class DepartmentServlet extends HttpServlet {
 	}
 
 	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html;charset=UTF-8");
-		PrintWriter out=response.getWriter();
-		try {
 		String id = request.getParameter("id").toString();
-		
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction trans = session.beginTransaction();
 		Department d = (Department)session.get(Department.class, new Integer(id));
-		String name = d.getId()+". "+d.getName()+" - "+d.getLineManager();
-		
-		session.delete(d);
-		trans.commit();
-		session.close();
-		request.setAttribute("message", "Department \""+name+"\" deleted.");
-		list(request, response);
+		String name = d.getName();
+		String manager="";
+		if(d.getLineManager()!=null) {
+			manager = d.getLineManager().getName();
+		}
+		String str = id+". "+name+" - "+manager;
+
+		try {
+			session.delete(d);
+			trans.commit();
+			session.close();
+			request.setAttribute("message", "Department \""+str+"\" deleted.");
+			list(request, response);
 		} catch (javax.persistence.PersistenceException e) {
-	        out.println("<script type=\"text/javascript\">");
-	//        out.println("alert('Please+edit+and+remove+all+the+employees+of+this+Department.');");
-	        out.println("alert('Hello');");
-	        out.println("</script>");
-			response.sendRedirect("DepartmentServlet?action=list");
+			response.sendRedirect("DepartmentServlet?action=list&alert="+URLEncoder.encode("Please remove all the Employees in the Department \""+name+"\" before deleting it.","UTF-8"));
 		}
 	}
 
-	private void edit(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id=request.getParameter("id");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Department d = (Department)session.get(Department.class, new Integer(id));
+		session.close();
+		request.setAttribute("department", d);
+		request.getRequestDispatcher("/addDepartment.jsp").forward(request, response);
 		
 	}
 
@@ -103,6 +106,8 @@ public class DepartmentServlet extends HttpServlet {
 		String lineManagerId=request.getParameter("lineManagerId");
 		
 		System.out.println("--------------====id="+id+", name="+name);
+		
+		if(!StringUtil.isNull(name)) {
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/addDepartment.jsp");
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -128,6 +133,7 @@ public class DepartmentServlet extends HttpServlet {
 		trans.commit();
 		session.close();
 		request.setAttribute("message", "Department \""+d.getName()+"\" saved successfully.");
+		}
 		list(request, response);
 	}
 
@@ -164,6 +170,7 @@ public class DepartmentServlet extends HttpServlet {
 	private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String sort=request.getParameter("sort");
 		String order=request.getParameter("order");
+		String alert=request.getParameter("alert");
 		
 		if (StringUtil.isNull(sort)) {
 			sort="id";
@@ -215,6 +222,7 @@ public class DepartmentServlet extends HttpServlet {
 		request.setAttribute("departmentList", departmentList);
 		request.setAttribute("sort", sort);
 		request.setAttribute("order", order);
+		request.setAttribute("alert", alert);
 		request.setAttribute("url", StringUtil.getURL(request));
 		
 		if (request.getAttribute("message")== null) {
