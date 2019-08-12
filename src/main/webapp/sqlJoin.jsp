@@ -30,22 +30,22 @@
 			stmt=conn.createStatement();
 			rs=stmt.executeQuery(sql);
 			
-			table="<table class='table'>";
+			table="<table class='table table-striped'>";
 			table+="<tr>";
 			ResultSetMetaData metadata = rs.getMetaData();
 			
 			for(int i=0; i<metadata.getColumnCount(); i++){
 				String name = metadata.getColumnName(i+1);
-				table+="\t\t<th class=\"sortable\">"+name+"</th>";
+				table+="<th>"+name+"</th>";
 			}
 			table+="</tr>";
 			int ii=0;
 			while(rs.next()){
 				ii++;
-				table+="<tr class="+(ii%2==0?"even":"odd")+">";
+				table+="<tr>";
 				for(int i=0; i<metadata.getColumnCount(); i++){
 					String value=rs.getString(i+1);
-					table+="\t\t<td"+(value==null?"style='background:#FFCCCC;'":"")+">"+value+"</td>";
+					table+="\t\t<td>"+value+"</td>";
 				}
 				table+="</tr>";
 			}

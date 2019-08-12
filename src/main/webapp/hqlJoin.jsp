@@ -30,10 +30,10 @@
 			hibernateSession = HibernateUtil.getSessionFactory().openSession(); 
 			List list = hibernateSession.createQuery(hql).list();
 			
-			table="<table class='table'>";
-			table+="<tr>";
-			table+="\t\t<th class=\"sortable\">Department Name</th>";
-			table+="\t\t<th class=\"sortable\">Employee Name</th>";
+			table="<table class='table table-striped'>";
+			table+="<tr'>";
+			table+="<th>Department Name</th>";
+			table+="<th>Employee Name</th>";
 			table+="</tr>";
 			
 			for(int i=0; i<list.size(); i++){
@@ -43,9 +43,9 @@
 				
 				String departmentName=department==null?"null":department.getName();
 				String employeeName=employee==null?"null":employee.getName();
-				table+="<tr class="+(i%2==0?"even":"odd")+">";
-				table+="\t\t<td"+(department==null?"style='background:#FFCCCC;'":"")+">"+departmentName+"</td>";
-				table+="\t\t<td"+(employee==null?"style='background:#FFCCCC;'":"")+">"+employeeName+"</td>";
+				table+="<tr>";
+				table+="<td>"+departmentName+"</td>";
+				table+="<td>"+employeeName+"</td>";
 				table+="</tr>";
 			}
 			table+="</table>";
@@ -57,7 +57,7 @@
 	}
 %>
 <meta charset="ISO-8859-1">
-<title>SQL JOIN</title>
+<title>HQL JOIN</title>
 </head>
 <body>
 <div class=" container list">
@@ -75,7 +75,7 @@
 		<div class="p-2">
 			<h2>Please input HQL</h2>
 		</div>
-		<textarea class="p-2 form-control" name="hql">${ param.sql }</textarea>
+		<textarea class="p-2 form-control" name="hql">${ param.hql }</textarea>
 		<div class="" align="center">
 			<input type="submit" class="button btn btn-success" value="Query">
 		</div>
