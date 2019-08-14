@@ -44,4 +44,4 @@
 
 ![join query hql](./outcomeImg/sql.png)
 
-(PS: Some of the names for the .png files is mis-spelled)
+(PS: In folder 'outcomeImg', some of the names for the .png files is mis-spelled such as 'addD' should be 'modifyD' and 'sql' should be 'hql')
