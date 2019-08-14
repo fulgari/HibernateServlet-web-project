@@ -14,7 +14,7 @@
 ![delete employee](./outcomeImg/deleteE.png)
 
 - Modify a employee
-![modify employees](./outcomeImg/modifyE.png)
+![modify employees](./outcomeImg/ModifyE.png)
 
 - List/query of the departments
 ![list department](./outcomeImg/departmentListQuery.png)
